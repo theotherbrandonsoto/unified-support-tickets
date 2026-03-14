@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data from the 7 support ticket programs across silos
+    schema: main
+    tables:
+      - name: raw_silo_a_program_a1
+        description: Silo A - Program A1 support tickets (messy raw data)
+      - name: raw_silo_a_program_a2
+        description: Silo A - Program A2 support tickets (messy raw data)
+      - name: raw_silo_a_program_a3
+        description: Silo A - Program A3 support tickets (messy raw data)
+      - name: raw_silo_B_program_b
+        description: Silo B - Program B support tickets (messy raw data)
+      - name: raw_silo_C_program_c
+        description: Silo C - Program C support tickets (messy raw data)
+      - name: raw_silo_D_program_d
+        description: Silo D - Program D support tickets (messy raw data)
+      - name: raw_silo_E_program_e
+        description: Silo E - Program E support tickets (messy raw data)

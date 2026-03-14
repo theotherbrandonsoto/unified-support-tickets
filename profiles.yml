@@ -1,0 +1,9 @@
+unified_support_tickets:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: './unified_support_tickets.duckdb'
+      schema: main
+      threads: 4
+      timeout_seconds: 300
