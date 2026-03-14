@@ -1,17 +1,54 @@
 ## Quick Start Guide
 
-### 1. Clone & Setup
+### ⚡ **FASTEST WAY: One Command Setup** (Recommended)
+
+**macOS/Linux:**
+```bash
+bash setup.sh
+```
+
+**Windows:**
+```bash
+setup.bat
+```
+
+This single command will:
+- ✅ Create a virtual environment
+- ✅ Install all dependencies from `requirements.txt`
+- ✅ Generate 7,000 synthetic support tickets
+- ✅ Run the complete dbt pipeline (raw → staging → mart)
+- ✅ Verify the setup is working
+
+**That's it!** Everything is ready to use.
+
+---
+
+### 📋 **Manual Setup** (if you prefer step-by-step)
+
+#### 1. Clone & Setup
 ```bash
 git clone https://github.com/theotherbrandonsoto/unified-support-tickets.git
 cd unified-support-tickets
 ```
 
-### 2. Install Dependencies
+#### 2. Create Virtual Environment (Optional but Recommended)
 ```bash
-pip install dbt-duckdb dbt-core duckdb pandas numpy
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 3. Generate Synthetic Data
+#### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+This installs:
+- dbt-core & dbt-duckdb (analytics engineering)
+- duckdb (database)
+- pandas & numpy (data processing)
+- mcp & uvicorn (Claude Desktop integration)
+
+#### 4. Generate Synthetic Data
 ```bash
 python generate_raw_data.py
 ```
@@ -28,9 +65,7 @@ Output:
 ✅ All raw data tables created successfully!
 ```
 
-This creates `unified_support_tickets.duckdb` with 7 messy raw tables (~1,000 rows each).
-
-### 4. Load Seeds & Execute dbt Models
+#### 5. Load Seeds & Execute dbt Models
 ```bash
 dbt seed --profiles-dir .
 dbt run --profiles-dir .
@@ -42,9 +77,9 @@ This will:
 3. Execute 1 mart model (unified fact table)
 4. Create `main_mart.fct_unified_support_tickets` with 7,000 rows
 
-### 5. Verify the Results
+#### 6. Verify the Results
 ```bash
-python -c "
+python3 -c "
 import duckdb
 conn = duckdb.connect('./unified_support_tickets.duckdb')
 result = conn.execute('SELECT COUNT(*) as total_tickets, COUNT(DISTINCT brand) as brands FROM main_mart.fct_unified_support_tickets').df()
