@@ -61,7 +61,7 @@ data_a1 = {
     'cust_id': [f'CUST-{random.randint(1000, 9999)}' for _ in range(n_rows)],
 }
 df_a1 = pd.DataFrame(data_a1)
-conn.execute("CREATE TABLE raw_silo_a_program_a1 AS SELECT * FROM df_a1")
+conn.execute("CREATE OR REPLACE TABLE raw_silo_a_program_a1 AS SELECT * FROM df_a1")
 print(f"✓ Created raw_silo_a_program_a1 with {len(df_a1)} rows")
 
 print("Generating Silo A - Program A2...")
@@ -83,7 +83,7 @@ data_a2 = {
     'user_id': [f'USER-{random.randint(10000, 99999)}' for _ in range(n_rows)],
 }
 df_a2 = pd.DataFrame(data_a2)
-conn.execute("CREATE TABLE raw_silo_a_program_a2 AS SELECT * FROM df_a2")
+conn.execute("CREATE OR REPLACE TABLE raw_silo_a_program_a2 AS SELECT * FROM df_a2")
 print(f"✓ Created raw_silo_a_program_a2 with {len(df_a2)} rows")
 
 print("Generating Silo A - Program A3...")
@@ -105,7 +105,7 @@ data_a3 = {
     'customer_identifier': [f'CID-{random.randint(100000, 999999)}' for _ in range(n_rows)],
 }
 df_a3 = pd.DataFrame(data_a3)
-conn.execute("CREATE TABLE raw_silo_a_program_a3 AS SELECT * FROM df_a3")
+conn.execute("CREATE OR REPLACE TABLE raw_silo_a_program_a3 AS SELECT * FROM df_a3")
 print(f"✓ Created raw_silo_a_program_a3 with {len(df_a3)} rows")
 
 # ============================================================================
@@ -133,7 +133,7 @@ for silo_name, program_name in [('B', 'program_b'), ('C', 'program_c'), ('D', 'p
     }
     df = pd.DataFrame(data)
     table_name = f'raw_silo_{silo_name}_{program_name}'
-    conn.execute(f"CREATE TABLE {table_name} AS SELECT * FROM df")
+    conn.execute(f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM df")
     print(f"✓ Created {table_name} with {len(df)} rows")
 
 print("\n✅ All raw data tables created successfully!")

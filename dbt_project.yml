@@ -2,7 +2,6 @@ name: 'unified_support_tickets'
 version: '1.0.0'
 config-version: 2
 profile: 'unified_support_tickets'
-
 model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
@@ -11,20 +10,13 @@ macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 target-path: "target"
 
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
 models:
   unified_support_tickets:
-    # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
-    raw:
-      +materialized: table
-      +schema: raw
     staging:
       +materialized: table
       +schema: staging
     mart:
       +materialized: table
       +schema: mart
+    metrics:
+      +materialized: view
