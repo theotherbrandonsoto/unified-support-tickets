@@ -1,7 +1,6 @@
 # 🗂️ Unified Support Tickets
 
-**Author:** theotherbrandonsoto | [GitHub](https://github.com/theotherbrandonsoto) | [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
-
+**Author:** theotherbrandonsoto &nbsp;|&nbsp; [GitHub](https://github.com/theotherbrandonsoto) &nbsp;|&nbsp; [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
 
 > 🔗 **Part of a connected portfolio.** The customer universe in this project (user IDs, plan types, churn status) is drawn from the same data model as [metrics-store](https://github.com/theotherbrandonsoto/metrics-store), simulating what a real multi-system analytics environment looks like.
 
@@ -31,7 +30,7 @@ In a production environment, this pipeline would ingest directly from source API
 
 ---
 
-## The Method
+## 🏗️ The Method
 ```
 RAW LAYER (7 source tables)
         ↓
@@ -52,7 +51,7 @@ MCP SERVER
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 ```
 unified-support-tickets/
 ├── models/
@@ -67,7 +66,7 @@ unified-support-tickets/
 
 ---
 
-## Unified Schema
+## 📐 Unified Schema
 
 The final `fct_unified_support_tickets` table:
 
@@ -83,12 +82,21 @@ The final `fct_unified_support_tickets` table:
 | `resolution_label` | string | How it was resolved |
 | `financial_compensation` | float | Dollar amount issued |
 | `escalated_to_management` | boolean | Whether the ticket was escalated beyond frontline support |
-| `resolved_within_sla` | boolean | Whether the ticket was resolved within 72 hours |
+| `resolved_within_sla` | boolean | Whether the ticket was resolved within the defined SLA window |
 | `customer_id` | string | Unique identifier for the customer who submitted the ticket |
 
 ---
 
-## Running the Project
+## 🔍 Key Insights from the Data
+
+- **BrandB is a clear outlier** — 45.2% SLA compliance vs. 49–53% for all other brands, meaning they miss SLA on more than half their tickets
+- **Total financial compensation exposure: $546,420** across 7,000 tickets
+- **50.5% of all tickets escalate to management** — a signal that frontline resolution rates are low across the board
+- **Issue volume is evenly distributed** across the top 5 categories (865–931 tickets each), meaning brand-level differences aren't driven by issue mix — they reflect genuine operational variance
+
+---
+
+## 🚀 Running the Project
 
 ### 1. Set up your environment
 ```bash
@@ -120,7 +128,7 @@ conn.execute('SELECT COUNT(*), COUNT(DISTINCT brand) FROM main_mart.fct_unified_
 
 ---
 
-## MCP Server (Claude Desktop Integration)
+## 🔌 MCP Server — Claude Desktop Integration
 
 This project uses [`mcp-server-duckdb`](https://github.com/hannesrudolph/mcp-server-duckdb) to expose the unified dataset to Claude Desktop for plain-English queries — no custom server code required.
 
@@ -133,8 +141,7 @@ brew install uv
 
 ### Setup
 
-Add the following to your Claude Desktop config at:
-`~/Library/Application Support/Claude/claude_desktop_config.json`
+Add the following to your Claude Desktop config at `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
@@ -154,14 +161,25 @@ Replace `/path/to/unified-support-tickets/` with the actual path to this repo on
 
 ### Example queries in Claude Desktop
 
-- "Which brand has the worst SLA compliance?"
-- "What's our total financial compensation exposure by brand?"
-- "Show me escalation rates by brand"
-- "Which brands are missing SLA on more than half their tickets?"
+- *"Which brand has the worst SLA compliance?"*
+- *"What's our total financial compensation exposure by brand?"*
+- *"Show me escalation rates by brand"*
+- *"Which brands are missing SLA on more than half their tickets?"*
 
 ---
 
-## Troubleshooting
+## 🛠️ Stack
+
+| Tool | Role |
+|------|------|
+| **dbt Core** | Data transformation and metrics layer |
+| **DuckDB** | Local analytical warehouse |
+| **Python** | Synthetic data generation |
+| **MCP Server** | Claude Desktop direct connectivity via `mcp-server-duckdb` |
+
+---
+
+## 🔧 Troubleshooting
 
 **`zsh: command not found: python`** — Use `python3` instead. macOS does not alias `python` by default.
 
@@ -172,9 +190,3 @@ Replace `/path/to/unified-support-tickets/` with the actual path to this repo on
 **`Model not found`** — Make sure you're passing `--profiles-dir .` to all dbt commands.
 
 **DuckDB file lock** — Close other connections or delete `unified_support_tickets.duckdb` and rerun from step 2.
-
----
-
-## Tech Stack
-
-dbt · DuckDB · SQL · Python · MCP
