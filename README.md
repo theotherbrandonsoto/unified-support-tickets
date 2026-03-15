@@ -157,4 +157,3 @@ python mcp_server.py
 ## Stack
 
 dbt · DuckDB · SQL · Python · MCP
-EOF
