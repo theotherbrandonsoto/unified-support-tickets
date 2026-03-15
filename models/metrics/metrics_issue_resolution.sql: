@@ -1,0 +1,18 @@
+-- models/metrics/metrics_issue_resolution.sql
+-- Escalation and SLA rates by issue type and resolution method
+
+select
+    primary_issue,
+    resolution_label,
+    count(*) as ticket_count,
+    round(
+        sum(case when escalated_to_management then 1 else 0 end) * 100.0 / count(*), 2
+    ) as escalation_rate_pct,
+    round(
+        sum(case when resolved_within_sla then 1 else 0 end) * 100.0 / count(*), 2
+    ) as sla_compliance_pct,
+    round(avg(financial_compensation), 2) as avg_compensation
+from {{ ref('fct_unified_support_tickets') }}
+group by primary_issue, resolution_label
+having count(*) > 20
+order by escalation_rate_pct desc
