@@ -2,6 +2,9 @@
 
 **Author:** theotherbrandonsoto | [GitHub](https://github.com/theotherbrandonsoto) | [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
 
+
+> 🔗 **Part of a connected portfolio.** The customer universe in this project (user IDs, plan types, churn status) is drawn from the same data model as [metrics-store](https://github.com/theotherbrandonsoto/metrics-store), simulating what a real multi-system analytics environment looks like.
+
 ---
 
 ## 📌 Executive Summary
@@ -59,8 +62,7 @@ unified-support-tickets/
 ├── seeds/
 │   └── status_mapping.csv
 ├── analysis/             # Example SQL queries
-├── generate_raw_data.py  # Creates synthetic raw data
-└── mcp_server.py         # Claude Desktop integration
+└── generate_raw_data.py  # Creates synthetic raw data
 ```
 
 ---
@@ -87,19 +89,28 @@ The final `fct_unified_support_tickets` table:
 ---
 
 ## Running the Project
+
+### 1. Set up your environment
 ```bash
-# Install dependencies
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Generate synthetic raw data (7,000 tickets across 7 sources)
-python generate_raw_data.py
+> **Note for Mac users:** macOS manages its own Python installation and will block system-wide pip installs. Always create a virtual environment first as shown above.
 
-# Run the full dbt pipeline
+### 2. Generate synthetic raw data
+```bash
+python3 generate_raw_data.py
+```
+
+### 3. Run the dbt pipeline
+```bash
 dbt seed --profiles-dir .
 dbt run --profiles-dir .
 ```
 
-Verify it worked:
+### 4. Verify it worked
 ```python
 import duckdb
 conn = duckdb.connect('./unified_support_tickets.duckdb')
@@ -111,49 +122,59 @@ conn.execute('SELECT COUNT(*), COUNT(DISTINCT brand) FROM main_mart.fct_unified_
 
 ## MCP Server (Claude Desktop Integration)
 
-The MCP server exposes the unified dataset to Claude Desktop for plain-English queries.
+This project uses [`mcp-server-duckdb`](https://github.com/hannesrudolph/mcp-server-duckdb) to expose the unified dataset to Claude Desktop for plain-English queries — no custom server code required.
 
-**Start the server:**
+### Prerequisites
+
+`uv` must be installed:
 ```bash
-python mcp_server.py
+brew install uv
 ```
 
-**Available tools:**
-- `sla_compliance_overview` — SLA compliance by brand (filterable)
-- `ticket_volume_by_status` — Ticket counts by status (filterable)
-- `escalation_and_compensation` — Escalation rates and $ exposure
-- `resolution_patterns` — Top issue/resolution combinations
-- `sla_missed_tickets` — Drill into SLA misses
+### Setup
 
-**Example queries in Claude Desktop:**
-- "Which brand has the worst SLA compliance?"
-- "What's our total financial compensation exposure?"
-- "Show me escalation rates by brand"
-
-**Claude Desktop config** (`claude_desktop_config.json`):
+Add the following to your Claude Desktop config at:
+`~/Library/Application Support/Claude/claude_desktop_config.json`
 ```json
 {
   "mcpServers": {
     "unified-support-tickets": {
-      "command": "python",
-      "args": ["/path/to/mcp_server.py"]
+      "command": "uvx",
+      "args": [
+        "mcp-server-duckdb",
+        "--db-path",
+        "/path/to/unified-support-tickets/unified_support_tickets.duckdb"
+      ]
     }
   }
 }
 ```
 
+Replace `/path/to/unified-support-tickets/` with the actual path to this repo on your machine. Then fully quit and restart Claude Desktop.
+
+### Example queries in Claude Desktop
+
+- "Which brand has the worst SLA compliance?"
+- "What's our total financial compensation exposure by brand?"
+- "Show me escalation rates by brand"
+- "Which brands are missing SLA on more than half their tickets?"
+
 ---
 
 ## Troubleshooting
 
-**"Catalog 'main' does not exist"** — Run `python generate_raw_data.py` first
+**`zsh: command not found: python`** — Use `python3` instead. macOS does not alias `python` by default.
 
-**"Model not found"** — Make sure you're passing `--profiles-dir .`
+**`externally-managed-environment` pip error** — You need a virtual environment. See step 1 of Running the Project above.
 
-**DuckDB file lock** — Close other connections or delete `unified_support_tickets.duckdb` and rerun
+**`Catalog 'main' does not exist`** — Run `python3 generate_raw_data.py` first.
+
+**`Model not found`** — Make sure you're passing `--profiles-dir .` to all dbt commands.
+
+**DuckDB file lock** — Close other connections or delete `unified_support_tickets.duckdb` and rerun from step 2.
 
 ---
 
-## Stack
+## Tech Stack
 
 dbt · DuckDB · SQL · Python · MCP
