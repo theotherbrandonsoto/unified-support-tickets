@@ -82,9 +82,9 @@ The final `fct_unified_support_tickets` table:
 | `root_cause_label` | string | Why it happened |
 | `resolution_label` | string | How it was resolved |
 | `financial_compensation` | float | Dollar amount issued |
-| `escalated_to_management` | boolean | |
-| `resolved_within_sla` | boolean | |
-| `customer_id` | string | |
+| `escalated_to_management` | boolean | Whether the ticket was escalated beyond frontline support |
+| `resolved_within_sla` | boolean | Whether the ticket was resolved within 72 hours |
+| `customer_id` | string | Unique identifier for the customer who submitted the ticket |
 
 ---
 
