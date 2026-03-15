@@ -1,13 +1,26 @@
-cat > README.md << 'EOF'
-# Unified Support Tickets: Data Consolidation Pipeline
+# 🗂️ Unified Support Tickets
 
-> Consolidating 7 siloed support programs into a unified, self-service, AI-queryable dataset
+**Author:** theotherbrandonsoto | [GitHub](https://github.com/theotherbrandonsoto) | [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
 
-## The Problem
+---
 
-Seven independent support ticket programs operated in silos — each with different schemas, status values, timezone handling, and data types. The compliance team had to ask 7 different people for data. There was no cross-brand visibility, no self-service access, and no unified source of truth.
+## 📌 Executive Summary
 
-**The specific messiness:**
+### The Business Problem
+Seven independent support programs operated in complete isolation — each with its own schema, status vocabulary, timezone handling, and data owner. There was no way to ask a simple question like "what's our SLA compliance rate across the company?" without manually collecting data from seven different people and reconciling it yourself.
+
+### The Solution
+This project consolidates all seven sources into a single unified fact table using a layered dbt pipeline on DuckDB. Each source gets its own staging model that handles field mapping, type normalization, timezone conversion to UTC, and status canonicalization via a seed-based lookup table. The result is one clean, queryable table — 7,000 tickets, zero nulls in critical fields, fully lowercase and UTC-normalized.
+
+### Project Impact
+This is the kind of work that looks unglamorous from the outside but unlocks everything downstream. Before consolidation, cross-brand analysis wasn't possible. After, support ops can self-serve, SLA compliance is comparable across brands, and the unified table is ready to feed dashboards, AI workflows, or downstream pipelines — without asking anyone for a data pull first. It demonstrates the ETL judgment that separates analysts who can build reliable data foundations from those who can only consume them.
+
+### Next Steps
+In a production environment, this pipeline would ingest directly from source APIs or a shared data warehouse rather than CSVs, with incremental loading to handle new tickets without full reruns. Planned additions include dbt tests for uniqueness and referential integrity, a time-to-resolution fact table for SLA trend analysis, and automated pipeline runs via Airflow or Prefect on a daily schedule.
+
+---
+
+**The Challenges:**
 - Different column names for the same concepts (`ticket_number` vs `request_id` vs `ticket_id`)
 - Status values with no consistency (`OPEN`, `wip`, `NEW`, `in_progress` all meaning the same thing)
 - Timestamps in mixed timezones and formats (including ISO strings)
@@ -15,7 +28,7 @@ Seven independent support ticket programs operated in silos — each with differ
 
 ---
 
-## The Solution
+## The Method
 ```
 RAW LAYER (7 source tables)
         ↓
